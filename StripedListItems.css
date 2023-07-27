@@ -1,0 +1,7 @@
+.list-striped li:nth-child(even) {
+    background-color: gainsboro;
+}
+
+.list-striped li {
+    height: 4rem;
+}
