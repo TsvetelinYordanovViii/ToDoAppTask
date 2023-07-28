@@ -142,7 +142,10 @@ saveOrCancelEdit = (itemClass, cancel) => {
 }
 
 $(document).ready(() => {
-    $("#add").click(() => { addItem(-1, $("#toDoField").val()) })
+    $("#add").click(() => {
+        addItem(-1, $("#toDoField").val());
+        $("#toDoField").val("");
+    })
 
     //Number of list items.
     //I just hoped the .length will work as intended. It did.
