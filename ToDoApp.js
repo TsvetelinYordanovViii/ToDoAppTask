@@ -1,9 +1,9 @@
 const toDoField = $("#toDoField");
 
 //Number of list items
-let toDoListLength = $("li").length;
+let toDoListLength = localStorage.length;
 
-addItem = () => {
+addItem = (givenIndex, value) => {
     //Initializing variables.
     let itemIndex = 1;
     let itemClass = "item" + itemIndex;
@@ -39,17 +39,22 @@ addItem = () => {
     content.addClass("col-8 d-flex align-items-center ms-1");
     paragraph.addClass("align-items-center m-0");
     //The value of the To Do item is also added here.
-    paragraph.text(toDoField.val());
+    paragraph.text(value);
     options.addClass("col-2 d-flex align-items-center justify-content-end visually-hidden taskOptions");
 
     newItem.addClass("ms-2 list-group-item d-flex flex-row justify-content-between");
 
     //Check for an unused item id.
     //Some dot shenanigans are at play here because when adding a class, the dot is not required while for selecting it is.
-    while ($("." + itemClass).length > 0) {
-        itemIndex++;
-        itemClass = "item" + itemIndex;
-    };
+    if (givenIndex == -1) {
+        while ($("." + itemClass).length > 0) {
+            itemIndex++;
+            itemClass = "item" + itemIndex;
+        };
+    }
+    else {
+        itemClass = "item" + givenIndex;
+    }
     newItem.addClass(itemClass);
 
     //Assembling the completed To Do item.
@@ -69,10 +74,14 @@ addItem = () => {
     editButton.click(() => { editItem(itemClass) });
     deleteButton.click(() => { deleteItem(itemClass) });
 
+    if (givenIndex == -1)
+        localStorage.setItem(itemClass, value);
+
     $("#toDoList").append(newItem);
 }
 
 deleteItem = (item) => {
+    localStorage.removeItem(item);
     $("." + item).remove();
 }
 
@@ -126,23 +135,19 @@ saveOrCancelEdit = (itemClass, cancel) => {
 
     if (!cancel) {
         taskText.text(editingField.val());
+        localStorage.setItem(itemClass, editingField.val());
     }
     editingField.remove();
     editedItem.removeClass("editing visually-hidden");
 }
 
 $(document).ready(() => {
-    $("#add").click(addItem)
+    $("#add").click(() => { addItem(-1, toDoField.val()) })
 
 
-    for (let i = 1; i < (toDoListLength + 1); i++) {
-        let item = ".item" + i;
-        $(item).hover(() => {
-            $(item + " .taskOptions").removeClass("visually-hidden");
-        },
-            () => {
-                $(item + " .taskOptions").addClass("visually-hidden");
-            });
+    for (let i = 0; i < (toDoListLength); i++) {
+        let item = "item" + (i + 1);
+        addItem(i, localStorage.getItem(item))
     }
 
 });
