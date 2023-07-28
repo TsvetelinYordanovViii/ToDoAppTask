@@ -5,11 +5,17 @@ body {
 #toDoField {
     background-color: goldenrod;
     border-color: darkgoldenrod;
+    font-family: 'Edu SA Beginner', cursive;
+}
+
+#add {
+    font-family: 'Edu SA Beginner', cursive;
 }
 
 .list-striped li {
     border-color: transparent;
     height: 4rem;
+    font-family: 'Edu SA Beginner', cursive;
 }
 
 .list-striped li:nth-child(odd) {
