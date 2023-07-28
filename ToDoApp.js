@@ -57,9 +57,14 @@ addItem = () => {
     options.append(editButton, deleteButton);
     newItem.append(content, options);
     //Adding event listeners for hovering over the item. It is about hiding and revealing the option buttons.
+    //I can't use the toggle class method because the save or cancel function doesn't accordingly change the visibility 
+    //of the options box. If set to toggle, then cancelling or saving the editing of an item will cause the options box.
+    //to be hidden when the mouse hovers over it and be visible when the cursor is outside the task.
     $(newItem).hover(() => {
-        $("." + itemClass + " .taskOptions").toggleClass("visually-hidden");
-    })
+        $("." + itemClass + " .taskOptions").removeClass("visually-hidden");
+    }, () => {
+        $("." + itemClass + " .taskOptions").addClass("visually-hidden");
+    });
 
     editButton.click(() => { editItem(itemClass) });
     deleteButton.click(() => { deleteItem(itemClass) });
@@ -100,8 +105,8 @@ editItem = (itemClass) => {
     editingField.addClass("col-8 d-flex align-items-center");
     editingField.val(taskText.text());
 
-    saveButton.click(() => { editItem(itemClass, false) });
-    cancelButton.click(() => { deleteItem(itemClass, true) });
+    saveButton.click(() => { saveOrCancelEdit(itemClass, false) });
+    cancelButton.click(() => { saveOrCancelEdit(itemClass, true) });
 
     $("." + itemClass + " div:nth-child(2) .edit").addClass("visually-hidden");
     itemOptions.prepend(cancelButton);
@@ -111,7 +116,19 @@ editItem = (itemClass) => {
 }
 
 saveOrCancelEdit = (itemClass, cancel) => {
+    let editedItem = $("." + itemClass + " div:first");
+    let taskText = $("." + itemClass + " div:first p");
+    let editingField = $("." + itemClass + " input");
 
+    $("." + itemClass + " div:nth-child(3) .save").remove();
+    $("." + itemClass + " div:nth-child(3) .cancel").remove();
+    $("." + itemClass + " div:nth-child(3) .edit").removeClass("visually-hidden");
+
+    if (!cancel) {
+        taskText.text(editingField.val());
+    }
+    editingField.remove();
+    editedItem.removeClass("editing visually-hidden");
 }
 
 $(document).ready(() => {
@@ -120,10 +137,12 @@ $(document).ready(() => {
 
     for (let i = 1; i < (toDoListLength + 1); i++) {
         let item = ".item" + i;
-        $(item).hover(
+        $(item).hover(() => {
+            $(item + " .taskOptions").removeClass("visually-hidden");
+        },
             () => {
-                $(item + " .taskOptions").toggleClass("visually-hidden");
-            })
+                $(item + " .taskOptions").addClass("visually-hidden");
+            });
     }
 
 });
