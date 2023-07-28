@@ -12,7 +12,7 @@ addItem = (givenIndex, value) => {
 
         //For the edit and delete button, I decided it will be better if I just inject the code directly here.
         let editButton = $(`
-        <button class="btn border  me-2 edit">
+        <button class="btn border border-black me-2 edit">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                 fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                 <path
@@ -24,7 +24,7 @@ addItem = (givenIndex, value) => {
         );
 
         let deleteButton = $(`
-        <button class="btn border  me-2 delete">
+        <button class="btn border border-black me-2 delete">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                 fill="currentColor" class="bi bi-trash2" viewBox="0 0 16 16">
                 <path
@@ -93,7 +93,7 @@ deleteItem = (item) => {
 editItem = (itemClass) => {
     //Creating the needed buttons for saving and cancelling the edit.
     let saveButton = $(`
-    <button class="btn border me-2 save">
+    <button class="btn border border-black me-2 save">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
             class="bi bi-check2" viewBox="0 0 16 16">
             <path
@@ -103,7 +103,7 @@ editItem = (itemClass) => {
     );
 
     let cancelButton = $(`
-    <button class="btn border me-2 cancel">
+    <button class="btn border border-black me-2 cancel">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
             class="bi bi-x-lg" viewBox="0 0 16 16">
             <path
