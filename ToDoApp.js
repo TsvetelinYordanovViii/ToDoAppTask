@@ -1,11 +1,8 @@
-const toDoField = $("#toDoField");
-
-//Number of list items
-let toDoListLength = localStorage.length;
+let largestIndex = 1;
 
 addItem = (givenIndex, value) => {
     //Initializing variables.
-    let itemIndex = 1;
+    let itemIndex = largestIndex;
     let itemClass = "item" + itemIndex;
     let paragraph = $("<p></p>");
     let newItem = $("<li></li>");
@@ -44,8 +41,8 @@ addItem = (givenIndex, value) => {
 
     newItem.addClass("ms-2 list-group-item d-flex flex-row justify-content-between");
 
-    //Check for an unused item id.
-    //Some dot shenanigans are at play here because when adding a class, the dot is not required while for selecting it is.
+    //Check for an unused item id after existing items.
+    //Some dot shenanigans are at play here because for adding a class the dot is not required while for selecting by class it is.
     if (givenIndex == -1) {
         while ($("." + itemClass).length > 0) {
             itemIndex++;
@@ -53,7 +50,7 @@ addItem = (givenIndex, value) => {
         };
     }
     else {
-        itemClass = "item" + givenIndex;
+        itemClass = givenIndex;
     }
     newItem.addClass(itemClass);
 
@@ -74,6 +71,8 @@ addItem = (givenIndex, value) => {
     editButton.click(() => { editItem(itemClass) });
     deleteButton.click(() => { deleteItem(itemClass) });
 
+    //The function must not save the items again when it loads them from local storage.
+    //-1 is given only when adding new items via tha add button.
     if (givenIndex == -1)
         localStorage.setItem(itemClass, value);
 
@@ -86,6 +85,7 @@ deleteItem = (item) => {
 }
 
 editItem = (itemClass) => {
+    //Creating the needed buttons for saving and cancelling the edit.
     let saveButton = $(`
     <button class="btn border me-2 save">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -109,7 +109,7 @@ editItem = (itemClass) => {
     let taskText = $("." + itemClass + " div:first p");
     let itemOptions = $("." + itemClass + " div:nth-child(2)");
 
-
+    //Creating an input containing the content from the paragraph in the element.
     editingField = $("<input/>")
     editingField.addClass("col-8 d-flex align-items-center");
     editingField.val(taskText.text());
@@ -142,12 +142,34 @@ saveOrCancelEdit = (itemClass, cancel) => {
 }
 
 $(document).ready(() => {
-    $("#add").click(() => { addItem(-1, toDoField.val()) })
+    $("#add").click(() => { addItem(-1, $("#toDoField").val()) })
 
+    //Number of list items.
+    //I just hoped the .length will work as intended. It did.
+    let tasksIndexes = [];
+    for (let i = 0; i < localStorage.length; i++) {
+        tasksIndexes[i] = localStorage.key(i);
+    }
+    //The keys are unordered, thus requiring this extra step of adding an array with the keys and sort them.
+    tasksIndexes = tasksIndexes.sort();
 
-    for (let i = 0; i < (toDoListLength); i++) {
-        let item = "item" + (i + 1);
-        addItem(i, localStorage.getItem(item))
+    //After that, add the items to the to do list.
+    for (let i = 0; i < tasksIndexes.length; i++) {
+        let key = tasksIndexes[i];
+        let itemIndex = "item" + (i + 1);
+        let value = localStorage.getItem(key);
+
+        addItem(itemIndex, value);
+        //When the user deletes any items from the to do list, aside from the last one, it causes the items
+        //to be disorganized and when reloading the page the tasks may be in different positions.
+        if (itemIndex !== key) {
+            localStorage.setItem(itemIndex, value);
+            localStorage.removeItem(key);
+        }
     }
 
+    //Removing upper items and adding new ones will cause the newer items to appear in their position
+    //when reloading the page. By finding the largest index and using it as the initial value of
+    //itemIndex in addItem we ensure that the new items will remain after existing ones upon reload.
+    largestIndex = tasksIndexes.length + 1;
 });
