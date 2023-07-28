@@ -2,16 +2,30 @@ body {
     background-color: darkslategray;
 }
 
+#toDoField {
+    background-color: goldenrod;
+    border-color: darkgoldenrod;
+}
+
+.list-striped li {
+    border-color: transparent;
+    height: 4rem;
+}
+
 .list-striped li:nth-child(odd) {
     background-color: burlywood;
-    border-color: transparent;
 }
 
 .list-striped li:nth-child(even) {
     background-color: darkgoldenrod;
-    border-color: transparent;
 }
 
-.list-striped li {
-    height: 4rem;
+#toDoList li:nth-child(odd) input {
+    background-color: rgb(194, 163, 123);
+    border-color: ghostwhite;
+}
+
+#toDoList li:nth-child(even) input {
+    background-color: rgb(153, 115, 17);
+    border-color: ghostwhite;
 }
